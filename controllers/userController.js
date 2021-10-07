@@ -7,14 +7,14 @@ const bcrypt = require("bcryptjs");
 // Register endpoint
 router.post("/register", async (req, res) => {
 
-    let { username, passwordhash } = req.body.user;
+    let { email, passwordhash } = req.body.user;
     try {
         const User = await UserModel.create({
-            username,
+            email,
             passwordhash: bcrypt.hashSync(passwordhash, 13),
         });
 
-        let token = jwt.sign({id: User.id, username: User.username}, process.env.JWT_SECRET, {expiresIn: '7d'});
+        let token = jwt.sign({id: User.id, email: User.email}, process.env.JWT_SECRET, {expiresIn: '7d'});
     
         res.status(201).json({
             message: "User successfully registered",
@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
     } catch (err) {
         if (err instanceof UniqueConstraintError) {
             res.status(409).json({
-                message: "Username already in use",
+                message: "Email already in use",
             });
         } else {
             res.status(500).json({
@@ -37,12 +37,12 @@ router.post("/register", async (req, res) => {
 // Login endpoint
 router.post("/login", async (req, res) => {
 
-    let { username, passwordhash } = req.body.user;
+    let { email, passwordhash } = req.body.user;
 
     try {
         const loginUser = await UserModel.findOne({
             where: {
-                username: username,
+                email: email,
             },
         });
 
