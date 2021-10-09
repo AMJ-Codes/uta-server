@@ -17,7 +17,7 @@ const sequelize = new Sequelize(
 
 const dbConnection = require("./db"); // connects to database
 
-/* 
+
 const controllers = require("./controllers");
 
 // middleware function. Allows req.body. Must go above all other routes. 
@@ -28,17 +28,14 @@ app.use(cors());
 app.use(require("./middleware/validate-jwt"));
 app.use("/log", controllers.logController);
 
-*/
-
-
 dbConnection.authenticate()
   .then(() => dbConnection.sync()) 
   .then(() => {
-    app.listen(3000, () =>
-      console.log(`[Server: ] App is listening; we can hear you loud and clear.`)
-    );
+    app.listen(process.env.PORT, () => {
+      console.log(`server is listening on port ${process.env.PORT}`);
   })
   .catch((err) => {
     console.log("[Server: ] Server Crashed");
     console.error(err);
-  });
+  })
+})
